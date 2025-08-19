@@ -1,0 +1,81 @@
+import string
+from collections import Counter
+
+def analyze_text_file(file_path):
+    """
+    Analyzes a text file to count words, lines, and characters,
+    and determines the most common words.
+    
+    Args:
+        file_path (str): The path to the text file.
+    
+    Returns:
+        A tuple containing the total counts (words, lines, characters)
+        and a Counter object with word frequencies, or None if an error occurs.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            text = file.read()
+            
+            # Count lines
+            lines_count = len(text.splitlines())
+            
+            # Count characters (including whitespace)
+            chars_count = len(text)
+            
+            # Normalize text for word counting and frequency analysis
+            # Convert to lowercase and remove punctuation
+            normalized_text = text.lower().translate(str.maketrans('', '', string.punctuation))
+            
+            # Split into words and count
+            words = normalized_text.split()
+            words_count = len(words)
+            
+            # Perform word frequency analysis
+            word_frequencies = Counter(words)
+            
+            return (words_count, lines_count, chars_count), word_frequencies
+    except FileNotFoundError:
+        print(f"Error: The file at '{file_path}' was not found.")
+        return None, None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None, None
+
+def display_results(counts, frequencies):
+    """
+    Displays the analysis results in a structured format.
+    
+    Args:
+        counts (tuple): A tuple with word, line, and character counts.
+        frequencies (Counter): A Counter object with word frequencies.
+    """
+    if counts and frequencies:
+        words_count, lines_count, chars_count = counts
+        print("--- Text Analysis Results ---")
+        print(f"Total Words: {words_count}")
+        print(f"Total Lines: {lines_count}")
+        print(f"Total Characters: {chars_count}")
+        print("\n--- Top 10 Most Common Words ---")
+        
+        # Get the top 10 most common words
+        top_words = frequencies.most_common(10)
+        
+        for word, count in top_words:
+            print(f"'{word}': {count} times")
+    else:
+        print("No results to display.")
+
+# --- Main part of the script ---
+if __name__ == "__main__":
+    file_name = "sample_text.txt"  # Replace with your file name
+    
+    # Create a dummy file for demonstration
+    with open(file_name, 'w', encoding='utf-8') as f:
+        f.write("Hello world.\n")
+        f.write("This is a sample text file.\n")
+        f.write("This file is for demonstrating a text analysis program.\n")
+        f.write("Hello again, hello world.")
+
+    counts, frequencies = analyze_text_file(file_name)
+    display_results(counts, frequencies)
