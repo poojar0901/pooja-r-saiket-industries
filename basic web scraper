@@ -1,0 +1,46 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_news_headlines(url):
+    """
+    Scrapes news headlines from a given URL and displays them.
+    
+    Args:
+        url (str): The URL of the news website.
+    """
+    try:
+        # Step 1: Send an HTTP request to the URL
+        response = requests.get(url)
+        response.raise_for_status() # Raise an exception for bad status codes (e.g., 404, 500)
+
+        # Step 2: Parse the HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        print(f"--- Headlines from {url} ---")
+        
+        # Step 3: Find and extract the relevant data
+        # This is the most crucial part. You need to inspect the HTML to find the right tags.
+        # Example: looking for all <h2> tags with a specific class
+        headlines = soup.find_all('h2', class_='headline-class') # Replace 'headline-class' with the actual class
+        
+        if not headlines:
+            print("No headlines found with the specified criteria. 🧐")
+            print("Please inspect the webpage's HTML to find the correct tags and classes.")
+        
+        for i, headline in enumerate(headlines):
+            # Use .strip() to remove any leading/trailing whitespace
+            print(f"{i+1}. {headline.get_text().strip()}")
+            
+        print("----------------------------------------")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: Could not retrieve the webpage. {e} 😞")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e} 😵‍💫")
+
+# --- Main Program ---
+if __name__ == "__main__":
+    # Example URL (this might need to be changed if the website structure changes)
+    target_url = "https://www.theverge.com/tech" 
+    
+    get_news_headlines(target_url)
