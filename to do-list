@@ -1,0 +1,66 @@
+class Task:
+    def __init__(self, description):
+        self.description = description
+        self.completed = False
+
+    def mark_completed(self):
+        self.completed = True
+
+    def __str__(self):
+        status = "✅" if self.completed else "❌"
+        return f"[{status}] {self.description}"
+
+def display_menu():
+    print("\n--- To-Do List Menu ---")
+    print("1. Add a task")
+    print("2. View all tasks")
+    print("3. Mark a task as completed")
+    print("4. Exit")
+    print("-----------------------")
+
+def add_task(tasks):
+    description = input("Enter the task description: ")
+    if description in tasks:
+        print("Task already exists!")
+    else:
+        new_task = Task(description)
+        tasks[description] = new_task
+        print("Task added successfully!")
+
+def view_tasks(tasks):
+    if not tasks:
+        print("Your to-do list is empty! 😴")
+        return
+    
+    print("\n--- Your Tasks ---")
+    for task in tasks.values():
+        print(task)
+    print("------------------")
+
+def mark_task_completed(tasks):
+    description = input("Enter the description of the task to complete: ")
+    if description in tasks:
+        tasks[description].mark_completed()
+        print(f"Task '{description}' marked as completed! 🎉")
+    else:
+        print("Task not found. Please check the description.")
+
+def main():
+    tasks = {}  # The dictionary to store our Task objects
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-4): ")
+        if choice == '1':
+            add_task(tasks)
+        elif choice == '2':
+            view_tasks(tasks)
+        elif choice == '3':
+            mark_task_completed(tasks)
+        elif choice == '4':
+            print("Exiting the application. Goodbye! 👋")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 4.")
+
+if __name__ == "__main__":
+    main()
