@@ -1,0 +1,99 @@
+import os
+
+def read_file(filepath):
+    """
+    Reads content from a text file.
+
+    Args:
+        filepath (str): The path to the file.
+
+    Returns:
+        str: The content of the file, or None if an error occurs.
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Error: The file at '{filepath}' was not found. 😔")
+        return None
+    except IOError as e:
+        print(f"Error: An I/O error occurred while reading the file. {e} 😞")
+        return None
+
+def write_file(filepath, content):
+    """
+    Writes content to a text file.
+
+    Args:
+        filepath (str): The path to the file.
+        content (str): The content to write.
+
+    Returns:
+        bool: True if the write was successful, False otherwise.
+    """
+    try:
+        with open(filepath, 'w', encoding='utf-8') as file:
+            file.write(content)
+        print("File updated successfully! 🎉")
+        return True
+    except IOError as e:
+        print(f"Error: An I/O error occurred while writing to the file. {e} 😖")
+        return False
+
+def find_and_replace(filepath, old_word, new_word):
+    """
+    Finds and replaces all occurrences of a word in a file.
+
+    Args:
+        filepath (str): The path to the file.
+        old_word (str): The word to find.
+        new_word (str): The word to replace it with.
+    """
+    file_content = read_file(filepath)
+    if file_content is None:
+        return
+
+    if old_word not in file_content:
+        print(f"'{old_word}' was not found in the file. No changes made. 🧐")
+        return
+
+    modified_content = file_content.replace(old_word, new_word)
+    
+    if write_file(filepath, modified_content):
+        print(f"Successfully replaced all occurrences of '{old_word}' with '{new_word}'.")
+
+# --- Main Program ---
+if __name__ == "__main__":
+    file_path = "sample_text.txt"
+
+    # Create a sample file for demonstration if it doesn't exist
+    if not os.path.exists(file_path):
+        print(f"Creating a sample file '{file_path}' for demonstration...")
+        with open(file_path, "w") as f:
+            f.write("This is a sample text file.\n")
+            f.write("It contains some sample words.\n")
+            f.write("Let's test the program by replacing the word 'sample' with 'new'.")
+
+    print("\n--- File Operation Program ---")
+    
+    # Example 1: Read the original file
+    print("\nReading original file content:")
+    original_content = read_file(file_path)
+    if original_content:
+        print(original_content)
+
+    # Example 2: Perform find and replace
+    print("\nPerforming find and replace...")
+    old_word_to_find = "sample"
+    new_word_to_use = "updated"
+    find_and_replace(file_path, old_word_to_find, new_word_to_use)
+
+    # Example 3: Read the modified file
+    print("\nReading modified file content:")
+    modified_content = read_file(file_path)
+    if modified_content:
+        print(modified_content)
+
+    # Example 4: Demonstrate error handling (non-existent file)
+    print("\nDemonstrating error handling with a non-existent file:")
+    find_and_replace("non_existent_file.txt", "word", "new_word")
